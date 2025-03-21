@@ -105,19 +105,29 @@
             }
             drawWheel();
         }
-function determineResult() {
-    const arc = (2 * Math.PI) / options.length;
-    let adjustedAngle = (startAngle % (2 * Math.PI)) + (arc / 2); // Ajustement pour aligner le pointeur
 
-    if (adjustedAngle < 0) {
-        adjustedAngle += 2 * Math.PI;
-    }
+        function determineResult() {
+            const arc = (2 * Math.PI) / options.length;
 
-    const index = Math.floor((2 * Math.PI - adjustedAngle) / arc) % options.length;
-    document.getElementById("result").innerText = "Résultat : " + options[index];
-}
+            // Ajustement de l'angle pour correspondre au curseur en haut (270° = 3π/2)
+            let adjustedAngle = (startAngle + Math.PI / 2) % (2 * Math.PI);
 
+            if (adjustedAngle < 0) {
+                adjustedAngle += 2 * Math.PI;
+            }
 
+            // Trouver l'index correspondant
+            const index = Math.floor((2 * Math.PI - adjustedAngle) / arc) % options.length;
+
+            // Logs pour le débogage
+            console.log("Start Angle:", startAngle);
+            console.log("Adjusted Angle:", adjustedAngle);
+            console.log("Index trouvé:", index);
+            console.log("Résultat sélectionné:", options[index]);
+
+            // Afficher le résultat
+            document.getElementById("result").innerText = "Résultat : " + options[index];
+        }
 
         document.querySelector("button").addEventListener("click", spinWheel);
     </script>
