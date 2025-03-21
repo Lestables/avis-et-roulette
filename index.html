@@ -108,14 +108,19 @@
 function determineResult() {
     const arc = (2 * Math.PI) / options.length;
     
-    // Ajustement pour que l'angle 0 soit en haut (curseur)
-    let adjustedAngle = (startAngle + Math.PI / 2) % (2 * Math.PI);
+    // Ajustement pour que 0 radian soit en haut sous le curseur
+    let adjustedAngle = (startAngle % (2 * Math.PI)) - Math.PI / 2;
+    
+    if (adjustedAngle < 0) {
+        adjustedAngle += 2 * Math.PI;
+    }
 
-    // Trouver l'index du segment correspondant
+    // Trouver l'index du segment sous le curseur
     const index = Math.floor(adjustedAngle / arc) % options.length;
     
     document.getElementById("result").innerText = "Résultat : " + options[index];
 }
+
 
 
         document.querySelector("button").addEventListener("click", spinWheel);
