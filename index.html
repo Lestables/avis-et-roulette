@@ -3,143 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roulette de Récompenses</title>
+    <title>Roulette Personnalisée</title>
     <style>
-        canvas {
-            border: 5px solid black;
-            display: block;
-            margin: 20px auto;
-            position: relative;
-        }
-        button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            font-size: 16px;
-        }
-   <head>
-    <style>
+        /* Arrière-plan avec ton image */
         body {
-            background-image: url('logo_final_jpeg.jpg'); /* Vérifie bien le nom */
+            background-image: url('logo_final_jpeg.jpg'); /* Ton image de fond */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Conteneur de la roulette */
+        .roulette-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        /* Canvas pour la roulette */
+        canvas {
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Bouton pour lancer la roue */
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            background: red;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: darkred;
         }
     </style>
 </head>
+<body>
 
-
-    <h2 style="text-align:center;">Roulette de Récompenses</h2>
-    <div style="position: relative; width: 400px; margin: auto;">
+    <!-- Conteneur de la roulette -->
+    <div class="roulette-container">
         <canvas id="wheelCanvas" width="400" height="400"></canvas>
-        <!-- Curseur Rouge -->
-        <div style="
-            position: absolute; 
-            top: -10px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            width: 0; 
-            height: 0; 
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 20px solid red;">
-        </div>
     </div>
-    <button onclick="spinWheel()">Lancer la roue</button>
-    <p id="result" style="text-align:center; font-size:18px;"></p>
+
+    <!-- Bouton pour lancer la roulette -->
+    <button onclick="spinWheel()">Lancer la Roulette</button>
 
     <script>
         const canvas = document.getElementById("wheelCanvas");
         const ctx = canvas.getContext("2d");
-
-        const options = [
-            "☕ Un café", 
-            "🍰 Un dessert", 
-            "🍷 Un verre de vin", 
-            "☕ Un café", 
-            "🎟️ 5% de réduction", 
-            "☕ Un café", 
-            "🧀 Une planche mixte tapas"
-        ];
-
-        const colors = ["#FF5733", "#33FF57", "#5733FF", "#FF33A1", "#33FFF5", "#FFA533", "#A133FF"];
-
-        let startAngle = 0;
         let spinning = false;
-        let spinSpeed = 0;
+        let angle = 0;
+        const names = ["☕ Un café", "🍰 Un dessert", "🍷 Un verre de vin", "☕ Un café", "🎟️ 5% de réduction", "☕ Un café", "🧀 Une planche mixte tapas"];
+        const colors = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#ffb833", "#57ff33", "#a833ff"];
+        const sliceAngle = (2 * Math.PI) / names.length;
 
         function drawWheel() {
-            const arc = (2 * Math.PI) / options.length;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            for (let i = 0; i < options.length; i++) {
-                const angle = startAngle + i * arc;
-                ctx.fillStyle = colors[i % colors.length];
+            for (let i = 0; i < names.length; i++) {
                 ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, canvas.height / 2);
-                ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, angle, angle + arc);
-                ctx.lineTo(canvas.width / 2, canvas.height / 2);
+                ctx.fillStyle = colors[i];
+                ctx.moveTo(200, 200);
+                ctx.arc(200, 200, 200, sliceAngle * i, sliceAngle * (i + 1));
+                ctx.lineTo(200, 200);
                 ctx.fill();
                 ctx.stroke();
-                
+
+                // Texte des noms
                 ctx.fillStyle = "white";
                 ctx.font = "16px Arial";
                 ctx.textAlign = "center";
-                ctx.save();
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate(angle + arc / 2);
-                ctx.fillText(options[i], canvas.width / 3, 0);
-                ctx.restore();
+                ctx.translate(200, 200);
+                ctx.rotate(sliceAngle * i + sliceAngle / 2);
+                ctx.fillText(names[i], 130, 10);
+                ctx.rotate(-sliceAngle * i - sliceAngle / 2);
+                ctx.translate(-200, -200);
             }
         }
-
-        drawWheel();
 
         function spinWheel() {
             if (spinning) return;
             spinning = true;
-            spinSpeed = Math.random() * 0.2 + 0.2; 
-            animateSpin();
-        }
 
-        function animateSpin() {
-            if (spinSpeed > 0.002) {
-                startAngle += spinSpeed;
-                spinSpeed *= 0.98;
-                requestAnimationFrame(animateSpin);
-            } else {
-                spinSpeed = 0;
-                spinning = false;
-                determineResult();
+            let randomDegree = Math.floor(Math.random() * 360) + 1800; // Entre 1800° et 2160°
+            let startAngle = angle;
+            let finalAngle = startAngle + (randomDegree * Math.PI / 180);
+
+            let spinTime = 4000;
+            let startTime = null;
+
+            function animateRotation(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let progress = timestamp - startTime;
+
+                if (progress < spinTime) {
+                    let easing = 1 - Math.pow(1 - progress / spinTime, 3); // Animation plus naturelle
+                    angle = startAngle + (finalAngle - startAngle) * easing;
+                    drawWheel();
+                    requestAnimationFrame(animateRotation);
+                } else {
+                    angle = finalAngle % (2 * Math.PI);
+                    spinning = false;
+                    determineResult();
+                }
             }
-            drawWheel();
+
+            requestAnimationFrame(animateRotation);
         }
 
         function determineResult() {
-            const arc = (2 * Math.PI) / options.length;
-
-            // Ajustement de l'angle pour correspondre au curseur en haut (270° = 3π/2)
-            let adjustedAngle = (startAngle + Math.PI / 2) % (2 * Math.PI);
-
-            if (adjustedAngle < 0) {
-                adjustedAngle += 2 * Math.PI;
-            }
-
-            // Trouver l'index correspondant
-            const index = Math.floor((2 * Math.PI - adjustedAngle) / arc) % options.length;
-
-            // Logs pour le débogage
-            console.log("Start Angle:", startAngle);
-            console.log("Adjusted Angle:", adjustedAngle);
-            console.log("Index trouvé:", index);
-            console.log("Résultat sélectionné:", options[index]);
-
-            // Afficher le résultat
-            document.getElementById("result").innerText = "Résultat : " + options[index];
+            const index = Math.floor(((2 * Math.PI - angle) / sliceAngle) % names.length);
+            alert("Résultat : " + names[index]);
         }
 
-        document.querySelector("button").addEventListener("click", spinWheel);
+        drawWheel();
     </script>
+
 </body>
 </html>
