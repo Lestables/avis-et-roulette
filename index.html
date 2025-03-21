@@ -105,14 +105,18 @@
             }
             drawWheel();
         }
+function determineResult() {
+    const arc = (2 * Math.PI) / options.length;
+    
+    // Ajustement pour que l'angle 0 soit en haut (curseur)
+    let adjustedAngle = (startAngle + Math.PI / 2) % (2 * Math.PI);
 
-        function determineResult() {
-            const arc = (2 * Math.PI) / options.length;
-            let adjustedAngle = startAngle % (2 * Math.PI); 
-            adjustedAngle = (2 * Math.PI) - adjustedAngle;  // Ajuster pour que 0° soit en haut
-            const index = Math.floor(adjustedAngle / arc) % options.length;
-            document.getElementById("result").innerText = "Résultat : " + options[index];
-        }
+    // Trouver l'index du segment correspondant
+    const index = Math.floor(adjustedAngle / arc) % options.length;
+    
+    document.getElementById("result").innerText = "Résultat : " + options[index];
+}
+
 
         document.querySelector("button").addEventListener("click", spinWheel);
     </script>
