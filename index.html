@@ -7,16 +7,20 @@
     <style>
         /* Arrière-plan avec ton image */
         body {
-            background-image: url('logo_final_jpeg.jpg'); /* Ton image de fond */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+           body {
+    background-image: url('logo_final_jpeg.jpg'); /* Ton image */
+    background-size: contain; /* Ajuste l'image sans la couper */
+    background-position: center; /* Centre l'image */
+    background-repeat: no-repeat; /* Empêche la répétition */
+    background-attachment: fixed; /* Garde l'image fixe */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
         }
 
         /* Conteneur de la roulette */
