@@ -107,17 +107,13 @@
         }
 function determineResult() {
     const arc = (2 * Math.PI) / options.length;
-    
-    // Ajustement pour que 0 radian soit en haut sous le curseur
-    let adjustedAngle = (startAngle % (2 * Math.PI)) - Math.PI / 2;
-    
+    let adjustedAngle = (startAngle % (2 * Math.PI)) + (arc / 2); // Ajustement pour aligner le pointeur
+
     if (adjustedAngle < 0) {
         adjustedAngle += 2 * Math.PI;
     }
 
-    // Trouver l'index du segment sous le curseur
-    const index = Math.floor(adjustedAngle / arc) % options.length;
-    
+    const index = Math.floor((2 * Math.PI - adjustedAngle) / arc) % options.length;
     document.getElementById("result").innerText = "Résultat : " + options[index];
 }
 
